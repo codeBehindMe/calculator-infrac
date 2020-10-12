@@ -1,0 +1,5 @@
+.idea/
+maker.json
+.terraform/
+*.tfstate
+*.backup
