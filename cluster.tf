@@ -1,10 +1,8 @@
 variable "project_name" {
   type = string
-  default = "soa-calc"
 }
 variable "geo_zone" {
   type = string
-  default = "australia-southeast1-b"
 }
 
 provider "google" {
