@@ -15,17 +15,37 @@ provider "google-beta" {
   project = var.project_name
 }
 
-resource "google_container_cluster" "test" {
-  name = "test"
+resource "google_container_cluster" "calc_cluster" {
+  name = "calc-cluster"
   provider = google-beta
   location = var.geo_zone
 
-  initial_node_count = 3
+  remove_default_node_pool = true
+  initial_node_count = 1
+
+  ip_allocation_policy {
+    services_ipv4_cidr_block = "10.1.0.0/16"
+    cluster_ipv4_cidr_block = "192.168.0.0/16"
+  }
 
   addons_config {
     istio_config {
       disabled = false
       auth = "AUTH_MUTUAL_TLS"
     }
+  }
+}
+
+resource "google_container_node_pool" "preemptible_nodes_alpha" {
+  name = "pe-alpha-pool"
+  location = var.geo_zone
+  cluster = google_container_cluster.calc_cluster.name
+
+  autoscaling {
+    max_node_count = 5
+    min_node_count = 1
+  }
+  node_config {
+    preemptible = true
   }
 }
